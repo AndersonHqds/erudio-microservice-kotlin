@@ -1,7 +1,8 @@
-package com.example.restwithspringbootandkotlinerudio.exceptions
+package com.example.restwithspringbootandkotlinerudio.exceptions.handler
 
+import com.example.restwithspringbootandkotlinerudio.exceptions.ExceptionResponse
+import com.example.restwithspringbootandkotlinerudio.exceptions.ResourceNotFoundException
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -21,5 +22,15 @@ class CustomizedResponseEntityExceptionHandler: ResponseEntityExceptionHandler()
                 request.getDescription(false)
         )
         return ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    @ExceptionHandler(ResourceNotFoundException::class)
+    fun handleResourceNotFoundException(ex: Exception, request: WebRequest): ResponseEntity<ExceptionResponse> {
+        val exceptionResponse = ExceptionResponse(
+                Date(),
+                ex.message,
+                request.getDescription(false)
+        )
+        return ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.NOT_FOUND)
     }
 }
